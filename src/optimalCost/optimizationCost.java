@@ -62,6 +62,7 @@ public class optimizationCost {
 			  CloudSim.init(num_user, calendar, trace_flag);
 
 			// 1. read file setup (DCs and delay) and workload
+			  System.out.println("this is a test for synchronization");
 			  workloadGenerator wg1 = new workloadGenerator();
 
 			  wlists = wg1.workkloadListsRead();
