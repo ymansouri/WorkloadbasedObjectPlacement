@@ -62,7 +62,7 @@ public class optimizationCost {
 			  CloudSim.init(num_user, calendar, trace_flag);
 
 			// 1. read file setup (DCs and delay) and workload
-			  
+			  System.out.println("This is a test for Git");
 			  workloadGenerator wg1 = new workloadGenerator();
 
 			  wlists = wg1.workkloadListsRead();
