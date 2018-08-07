@@ -22,7 +22,7 @@ public class objectDatacenterSpecification {
 
 	public static List<NewDatacenter> datacenterList=new ArrayList<>();
 	public static ArrayList<NewObject> objectList=new ArrayList<>();
-	public static int [][] delayBetweenDatacenter;
+	public static int [][] delayWithinDatacenter;
 	public static int periodTime;
 	public static int windowTime;
 	public static int delayConstraint;
@@ -33,8 +33,10 @@ public class objectDatacenterSpecification {
 	public static String dataCenterSpecification;
 	public static String datacenterDelay; 
 	public static int tierType;
+	public static int earlyDeletionDays;
 	
    
+	
 	// create a datacenter
 	public static NewDatacenter CreateDataCenter(String name,int reg,int id, double fail,
 			long hSCost,long cSCost,long hBCost ,long cBCost,long HRCost, long CRCost, long HWCost, long CWCost) {
@@ -144,24 +146,24 @@ public class objectDatacenterSpecification {
   
 	
    	
-	// read delay between data centers 
-	public static void readDelayBetweenDatacenters() {
+	//This function reads latency within data centers with two tiers. The record for latency is classified based on tiers (hot and cool), requests (read and write), and object size (small, medium, and large).  
+	public static void readDelayWithinDatacentersTiers() {
 		
-		delayBetweenDatacenter=new int[datacenterList.size()][datacenterList.size()];
+		delayWithinDatacenter=new int[datacenterList.size()][datacenterList.size()];
 		
 		ArrayList<String> strArrayList=new ArrayList<>();
 		strArrayList.addAll(readInput(datacenterDelay));
 		String[] results=null;		
 		int firstIndex=0;
-		for (int row = 0; row < delayBetweenDatacenter.length; row++) {
+		for (int row = 0; row < delayWithinDatacenter.length; row++) {
 			
 			int index=1;
-			for (int col = 0; col < delayBetweenDatacenter[row].length; col++) {
+			for (int col = 0; col < delayWithinDatacenter[row].length; col++) {
 				
 				String str=strArrayList.get(firstIndex);
 				//System.out.println("str====>"+str);
 			    results = str.split(",");
-                delayBetweenDatacenter[row][col]=Integer.parseInt(results[index]);
+                delayWithinDatacenter[row][col]=Integer.parseInt(results[index]);
 			    index++;
 			}
 			firstIndex++;
@@ -174,7 +176,7 @@ public class objectDatacenterSpecification {
 	     dataCenterSpecification=ICProperties.IC_SIMULATION_DATACENTER_SPECIFICATION.getValue();
 	     //datacenterDelay=ICProperties.IC_SIMULATION_DATACENTER_DELAY.getValue();
 	     //delayConstraint=ICProperties.IC_SIMULATION_DELAY_CONSTRAINT.getValueAsInt();
-	     //latencySencetive=ICProperties.IC_SIMULATION_LATENCY_SENCETIVE.getValueAsDouble();
+	     latencySencetive=ICProperties.IC_SIMULATION_LATENCY_SENCETIVE.getValueAsDouble();
 	     tierType=ICProperties.IC_SIMULATION_STORAGE_TIER_NUMBER.getValueAsInt();
 	     
 	      		
@@ -256,12 +258,12 @@ public class objectDatacenterSpecification {
 		objectDatacenterSpecification.periodTime = periodTime;
 	}
 	public static int[][] getDelayBetweenDatacenterAll() {
-		return delayBetweenDatacenter;
+		return delayWithinDatacenter;
 	}
 	
 	
 	public static void setDelayBetweenDatacenter(int[][] delayBetweenDatacenter) {
-		objectDatacenterSpecification.delayBetweenDatacenter = delayBetweenDatacenter;
+		objectDatacenterSpecification.delayWithinDatacenter = delayBetweenDatacenter;
 	}
 	public static int getDelayConstraint() {
 		return delayConstraint;
@@ -281,6 +283,14 @@ public class objectDatacenterSpecification {
 	}
 	public static void setWindowTime(int windowTime) {
 		objectDatacenterSpecification.windowTime = windowTime;
+	}
+	
+	public static int getEarlyDeletionDays() {
+		return earlyDeletionDays;
+	}
+
+	public static void setEarlyDeletionDays(int earlyDeletionDays) {
+		objectDatacenterSpecification.earlyDeletionDays = earlyDeletionDays;
 	}
 
 		

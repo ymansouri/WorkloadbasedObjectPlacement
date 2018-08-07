@@ -11,15 +11,14 @@ import workload.workloadGenerator;
 public class finalCostCalculation {
 	
 	private int regNumber;
-	static long newBucketSize[][];// this variable changed its value based on writing size of object
-	 
-	
+	private boolean flag;
 	private ArrayList<NewDatacenter> datacenterList=new ArrayList<>();
 	
-	public static ArrayList<NewDatacenter> combinationDatacenterList=new ArrayList<>();
+	static long newBucketSize[][];// this variable changed its value based on writing size of object
+	//public static ArrayList<NewDatacenter> combinationDatacenterList=new ArrayList<>();
 	static long cons;//  If flag in data setting is true, then its value is 1 and somehow the price of transactions are ignored; Otherwise if flag is false, this value considered and its value is 100,000,000. 
 	static double sizefactor; //If flag is true then its value is 1. In fact the size does not scale down. Otherwise, if the flag is false, then the size of object for read as well as for write can be scale down to arbitarey value (e.g., 0.1, 0.2)
-	private boolean flag;
+	
 	//NOTE: tierType with value 1 is hot tier and with value 0 is cold tier.
 	
 	
@@ -45,7 +44,7 @@ public class finalCostCalculation {
   	}
   	else{
   		
-  		//System.out.println("size===>"+(newBucketSize[j][t]*sizefactor));
+  		
   		long v=(long)(datacenterList.get(dcIndex).getCStorageCost()*((double)(newBucketSize[j][t]*sizefactor)));
   		//System.out.println("storageCost in cold tier===>"+tierType+"  "+j+"  "+t+"  "+v);
   		String sv=String.valueOf(v);
@@ -180,7 +179,39 @@ public BigInteger btCost(long rate, long cost, boolean f) {
 	
 } 
 
- 
+//5. bDelay Cost
+
+public BigInteger bdelayCost(int dcIndex, int tierType ,int j, int t) {
+	
+	 BigInteger CDelay=new BigInteger("0");
+	 
+	 int RLatency=latencyWithinDatacenter(dcIndex, tierType, 0);
+	 int WLatency=latencyWithinDatacenter(dcIndex, tierType, 1);
+	 for (int reg = 0; reg < workloadGenerator.regioNumber; reg++) {
+	  		if(workloadGenerator.objectListWriteRatePerRegion[j][t][reg]!=0){    
+	  			int wRate=workloadGenerator.objectListWriteRatePerRegion[j][t][reg];
+					  	
+					 // It is considered for both read and write objects that transfered.
+					 long v=((long)(objectDatacenterSpecification.latencySencetive*(wRate*WLatency+optimizationCost.readToWrite*wRate*RLatency)));
+			  		
+	  		    	  String sv=String.valueOf(v);
+	  		  		  BigInteger bsv=new BigInteger(sv);
+	  		    	
+	  		  		  String scons=String.valueOf(cons);
+	  		  		  BigInteger bcons=new BigInteger(scons);
+	  		  		  
+	  		  		  CDelay=CDelay.add(bsv.multiply(bcons));
+	  		    	
+	  		}
+	  		
+	  	 }// reg
+	
+  //System.out.println("index===>"+indexPermu+"  "+"J===>"+j+"  "+"t===>"+t+"  "+"CDelay===>"+CDelay);	
+  return CDelay;
+}  
+
+
+
 //6. bMigration Cost
 public BigInteger bmigrationCostCost(int dcIndex, int previousTier,int presentTier, int j, int t) {
   	   BigInteger CMigration=new BigInteger("0");
@@ -191,10 +222,9 @@ public BigInteger bmigrationCostCost(int dcIndex, int previousTier,int presentTi
   	else{
 		 	
   		 
-  		if(presentTier-previousTier==-1){// Transfer from Hot to Cold
+  		if(presentTier-previousTier==-1){// Transfer from Hot to Cool tier 
 				
-				long v=(datacenterList.get(dcIndex).getHbandwidthCost()*(newBucketSize[j][t]))+
-						datacenterList.get(dcIndex).getHReadCost()+datacenterList.get(dcIndex).getCWriteCost();
+				long v=datacenterList.get(dcIndex).getCWriteCost();
 				String sv=String.valueOf(v);
 		  		BigInteger bsv=new BigInteger(sv);
 		    	
@@ -204,10 +234,10 @@ public BigInteger bmigrationCostCost(int dcIndex, int previousTier,int presentTi
 				CMigration=bsv.multiply(bcons);
 				
 			}
-			else{// Transfer from cold to hot tier
+			else{// Transfer from Cool to Hot tier
 				
 				long v=(datacenterList.get(dcIndex).getCbandwidthCost()*(newBucketSize[j][t]))+
-						datacenterList.get(dcIndex).getCReadCost()+datacenterList.get(dcIndex).getHWriteCost();
+						datacenterList.get(dcIndex).getCReadCost();
 				String sv=String.valueOf(v);
 		  		BigInteger bsv=new BigInteger(sv);
 		    	
@@ -221,9 +251,9 @@ public BigInteger bmigrationCostCost(int dcIndex, int previousTier,int presentTi
   	
 	}  
 
- 
 
-// This function calculates consistency cost. This calculates only write transaction because input data to both tiers are free.
+
+//7. bConsistency Cost: This function calculates consistency cost. This calculates only write transaction because input data to both tiers are free.
 public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
 	  
 	  BigInteger CConsistency=new BigInteger("0");
@@ -253,6 +283,23 @@ public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
 	   return CConsistency;
 }
 
+// 8. Early Deletion Cost : This cost is applied when the object is kept for less than a certain days and is  transfered from the cool tier to the hot.
+public BigInteger earlyDeletionCost(int dcIndex, int t, int tm) {
+	BigInteger earlyDeletionCost =new BigInteger("0");
+	
+	if(t-tm < objectDatacenterSpecification.earlyDeletionDays){
+		long v =(objectDatacenterSpecification.earlyDeletionDays-(t-tm))*(datacenterList.get(dcIndex).getCStorageCost());
+		String sv=String.valueOf(v);
+  		BigInteger bsv=new BigInteger(sv);
+    	
+  	    String scons=String.valueOf(cons);
+  		BigInteger bcons=new BigInteger(scons);
+  		
+		earlyDeletionCost=bsv.multiply(bcons);
+	}
+	
+	return earlyDeletionCost;
+}
 
  public bCostElements btotalResidentCostPermuDatacenter( int dcIndex, int tier, int j,int t) throws FileNotFoundException {
      
@@ -263,6 +310,7 @@ public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
 	 BigInteger wCost=new BigInteger("0");
 	 BigInteger tranCost=new BigInteger("0");
 	 BigInteger consisCost=new BigInteger("0");
+	 BigInteger dCost=new BigInteger("0");
   	
   	if(t >= workloadGenerator.objectStartTime[j]){// 
   		   
@@ -272,12 +320,15 @@ public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
   	 	   tranCost=btransactionCost(dcIndex, tier, j, t);
   	 	   consisCost=bconsistencyCost(dcIndex, tier, j, t);
   	 	   tCost=tCost.add(sCost).add(rCost).add(wCost).add(tranCost);//.add(consisCost);
+  	 	   dCost=bdelayCost(dcIndex, tier, j, t);
   	 	}
 	    result.bstorageCost=sCost;
 	    result.breadCost=rCost;
 	    result.bwriteCost=wCost;
 	    result.btranCost=tranCost;
 	    result.bconsisCost=consisCost;
+	    result.bdelayCost=dCost;
+	   
 	    result.bnonMigrationCost=tCost;
 	    return result;
 }
@@ -306,7 +357,7 @@ public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
 	   }
 	
 		
-     public void bucketSizeIncrement() {
+  public void bucketSizeIncrement() {
 	    
 	     for (int j = 0; j < workloadGenerator.numberObjects; j++) {
 			 for (int t = 0; t < workloadGenerator.periodTime-1; t++) {
@@ -329,7 +380,70 @@ public BigInteger bconsistencyCost(int dcIndex, int tierType, int j, int t ) {
 	     */
      }
  
+//This function retrieves the latency based on the tier type (Hot=0 and Cool=1, except here to make justify index), request type (Read=0 and Write=1), and object size (Small=1, medium=2, and large=3)
+  public int latencyWithinDatacenter(int dcInde, int tierT, int requestType) {
+	  
+	  int latency=0;
+	  latency=objectDatacenterSpecification.delayWithinDatacenter[dcInde][6*(1-tierT)+requestType+objectSizeType()];
+	  return latency;
+}   
+
+ // This function determines the objectSizeType: 1:small object, 2:Medium object, and 3:large object 
+ private int objectSizeType() {
+	int sizeType=-1;
+	int sizeRange=workloadGenerator.objectMaxSize-workloadGenerator.objectMinSize;
+	if (sizeRange>=1 && sizeRange<=100){
+		sizeType=1;
+	}else if (sizeRange>100 && sizeRange<=1000){
+		sizeType=2;
+	}else{
+		sizeType=3;
+	}
+	
+	
+	return sizeType;
+}
  
+ //This function calculates the maximum writing latency cost between two tiers and read latency cost in the hot tier.
+ public BigInteger bdelayMaxWriteReadCost(int dcIndex, int tierType ,int j, int t) {
+		
+	 BigInteger CDelay=new BigInteger("0");
+	 
+	 int RLatency=latencyWithinDatacenter(dcIndex, tierType, 0);
+	 //Calculate the maximum latency of writes between two tiers.
+	 int WLatency=0;
+	 if (latencyWithinDatacenter(dcIndex, 1, 1)<latencyWithinDatacenter(dcIndex, 0, 1)){
+		WLatency=latencyWithinDatacenter(dcIndex, 1, 1);
+	 }else{
+		WLatency=latencyWithinDatacenter(dcIndex, 0, 1);
+	 }
+	 
+	 for (int reg = 0; reg < workloadGenerator.regioNumber; reg++) {
+	  		if(workloadGenerator.objectListWriteRatePerRegion[j][t][reg]!=0){    
+	  			int wRate=workloadGenerator.objectListWriteRatePerRegion[j][t][reg];
+					  	
+					 // It is considered for both read and write objects that transfered.
+					 long v=((long)(objectDatacenterSpecification.latencySencetive*(wRate*WLatency+optimizationCost.readToWrite*wRate*RLatency)));
+			  		
+	  		    	  String sv=String.valueOf(v);
+	  		  		  BigInteger bsv=new BigInteger(sv);
+	  		    	
+	  		  		  String scons=String.valueOf(cons);
+	  		  		  BigInteger bcons=new BigInteger(scons);
+	  		  		  
+	  		  		  CDelay=CDelay.add(bsv.multiply(bcons));
+	  		    	
+	  		}
+	  		
+	  	 }// reg
+	
+  //System.out.println("index===>"+indexPermu+"  "+"J===>"+j+"  "+"t===>"+t+"  "+"CDelay===>"+CDelay);	
+  return CDelay;
+}  
+
+ 
+ 
+     
 // This function determines whether to consider cost in very precise or not. If output is true, then we have all cost in dollars; otherwise we have cost in dollars multiplied 100,000,000.  
 public void preciseCost(boolean f ,double sf) {
 	
@@ -348,9 +462,7 @@ public void preciseCost(boolean f ,double sf) {
 }
 
 
-public ArrayList<NewDatacenter> getCombinationDatacenterList() {
-	return combinationDatacenterList;
-}
+
 
 
 public long[][] getNewBucketSize() {

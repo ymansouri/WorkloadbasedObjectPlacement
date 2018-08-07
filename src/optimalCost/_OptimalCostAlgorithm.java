@@ -8,9 +8,10 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
+
 import workload.workloadGenerator;
 
-public class OptimalCostAlgorithm {
+public class _OptimalCostAlgorithm {
 	
 	private int T;
 	private int MinT;
@@ -19,7 +20,6 @@ public class OptimalCostAlgorithm {
 	
 	private int tierType;
 	private BenchmarkAlgorithm benchAlgorithm;
-	private finalCostCalculation fc;
 	//private totalCostCalculation tCalculation;
 	
 	// cost and Location of all objects for each permutationComb
@@ -47,7 +47,7 @@ public void bOptimalCostCalculation() {
 			   
 				for (int tierT = 0; tierT < tierType; tierT++) {
 				    	  
-					   if(t==MinT){// delay cost is included in the non-migration Cost
+					   if(t==MinT){
 						  BigInteger costTier=totalCostCalculation.btotalResidentCost[t][j][tierT].bnonMigrationCost;
 		                  bpCost[t][j][tierT]=costTier;
 						  calculateLocationAllObjects(t, j, tierT, tierT);
@@ -61,23 +61,12 @@ public void bOptimalCostCalculation() {
 						
 						    bpCost[t][j][tierT]=bpCost[t][j][tierT].add(bpCost[t-1][j][tierT]).add(costComb).add(mCost);
 				            calculateLocationAllObjects(t, j, tierT,tierT);
-						    
-				            // early delay cost
+						
 				            for (int combp = 0; combp < tierType; combp++) { 
-				                BigInteger edcost=new BigInteger("0");// early delay cost
-						        
-				                if(combp!=tierT){
-						        	 
-				                	 mCost=totalCostCalculation.btotalMigrationCost[t-1][j][combp][tierT];
-						             
-				                	// this early cost happens when the object is transfered from the cool tier to the hot tier. We use t-1 in fuction 
-				                	 if (combp==0 & tierT==1){
-						            	 // This part should be investigated more.
-				                		 edcost=fc.earlyDeletionCost(workloadGenerator.objectListRegion[j], t, t-1);
-						             }
-						             
+						        if(combp!=tierT){
+						             mCost=totalCostCalculation.btotalMigrationCost[t-1][j][combp][tierT];
 							         BigInteger tempCost=new BigInteger("0");
-						             tempCost=tempCost.add(bpCost[t-1][j][combp]).add(costComb).add(mCost).add(edcost);
+						             tempCost=tempCost.add(bpCost[t-1][j][combp]).add(costComb).add(mCost);
 						             if(tempCost.compareTo(bpCost[t][j][tierT])==-1 || tempCost.compareTo(bpCost[t][j][tierT])==0){
 						    	         tempLocation=combp;
 							             bpCost[t][j][tierT]=tempCost;
@@ -89,7 +78,7 @@ public void bOptimalCostCalculation() {
 			}//comb			 
 	   } //j 
     }//t
-		// Find location each object in each time slot
+		// Calculate location each object in each time slot
 		   bcalculateLocationEachObject();
 }
 	
@@ -147,7 +136,7 @@ public void bcalculateLocationEachObject() {
 				    	      finalLocationAllObjects[j][t].addAll(locationAllObjects[t][j][comb]);
 				    	   }
 			     	    }
-			     	 // This part of code shows the location of each object "j" until time "t". // It is for more test. It is not needy for result!!!
+			     	 // this part of code shows the location of each object "j" until time "t". // It is for more test. It is not needy for result!!!
 			     	  if(t>slot){
 						    tempLocationAllObjects[j][t]=new ArrayList<>();
 						    tempLocationAllObjects[j][t].addAll(tempLocationAllObjects[j][t-1]);
@@ -210,8 +199,7 @@ public void bcalculateCostEachObject() {
 	          
 	          if(t>startTimeObject && finalLocationAllObjects[j][T-1].get(t-startTimeObject-1)!=finalLocationAllObjects[j][T-1].get(t-startTimeObject)){
 		             bCost[j][t].bmigrationCost=totalCostCalculation.btotalMigrationCost[t-1][j][finalLocationAllObjects[j][T-1].get(t-startTimeObject-1)][finalLocationAllObjects[j][T-1].get(t-startTimeObject)];
-		             
-	          }
+	              }
             }
     	
       }//j
@@ -251,7 +239,7 @@ public void bcalculateCostEachObject() {
 	}
 	
 	benchAlgorithm=new BenchmarkAlgorithm();
-    fc=new finalCostCalculation();
+	//tCalculation=new totalCostCalculation();
 	
     locationAllObjects=new ArrayList [T][(int)J][tierType];
 	for (int t = 0; t < T; t++) {

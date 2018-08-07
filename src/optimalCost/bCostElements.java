@@ -12,20 +12,26 @@ public class bCostElements {
 	 * @param bnonMigrationCost
 	 * @param bmigrationCost
 	 * @param btranCost
+	 * @param bdelayCost
+	 * @param bedelCost
 	 */
 	public bCostElements(BigInteger bstorageCost, BigInteger breadCost,
 			BigInteger bwriteCost, BigInteger bconsisCost,
 			BigInteger bnonMigrationCost, BigInteger bmigrationCost,
-			BigInteger btranCost) {
+			BigInteger btranCost, BigInteger bdelayCost, BigInteger bedelCost) {
 		super();
 		this.bstorageCost = bstorageCost;
 		this.breadCost = breadCost;
 		this.bwriteCost = bwriteCost;
 		this.bconsisCost = bconsisCost;
+		this.btranCost = btranCost;
+		this.bdelayCost=bdelayCost;
+		this.bedelCost=bedelCost;
 		this.bnonMigrationCost = bnonMigrationCost;
 		this.bmigrationCost = bmigrationCost;
-		this.btranCost = btranCost;
+		
 	}
+	
 	/**
 	 * @param storageCost
 	 * @param readCost
@@ -38,18 +44,28 @@ public class bCostElements {
 	breadCost=new BigInteger("0");
 	bwriteCost=new BigInteger("0");
 	bconsisCost=new BigInteger("0");
+	btranCost=new BigInteger("0");
+	bedelCost=new BigInteger("0");
 	bnonMigrationCost=new BigInteger("0");
 	bmigrationCost=new BigInteger("0");
-	btranCost=new BigInteger("0");
 	}
 	public BigInteger bstorageCost;
 	public BigInteger breadCost;
 	public BigInteger bwriteCost;
 	public BigInteger bconsisCost;
+	public BigInteger btranCost;
+	public BigInteger bedelCost;
+	public BigInteger bdelayCost;
+	
 	public BigInteger bnonMigrationCost;
 	public BigInteger bmigrationCost;
-	public BigInteger btranCost;
 	
+	public BigInteger getBconsisCost() {
+		return bconsisCost;
+	}
+	public void setBconsisCost(BigInteger bconsisCost) {
+		this.bconsisCost = bconsisCost;
+	}
 	public BigInteger getBstorageCost() {
 		return bstorageCost;
 	}
@@ -93,12 +109,11 @@ public class bCostElements {
 		this.btranCost = btranCost;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
+	public BigInteger getBedelCost() {
+		return bedelCost;
+	}
+	public void setBedelCost(BigInteger bedelCost) {
+		this.bedelCost = bedelCost;
+	}
 
 }

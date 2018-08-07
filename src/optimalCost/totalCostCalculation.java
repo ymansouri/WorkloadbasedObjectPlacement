@@ -70,6 +70,8 @@ public void initializationOfDatacenterSpecification() throws FileNotFoundExcepti
 							btotalResidentCost[t][j][tierT].bwriteCost=finalCostCal.btotalResidentCostPermuDatacenter(workloadGenerator.objectListRegion[j],tierT,j, t ).bwriteCost;
 							btotalResidentCost[t][j][tierT].btranCost=finalCostCal.btotalResidentCostPermuDatacenter(workloadGenerator.objectListRegion[j],tierT,j, t ).btranCost;
 							btotalResidentCost[t][j][tierT].bconsisCost=finalCostCal.btotalResidentCostPermuDatacenter(workloadGenerator.objectListRegion[j],tierT,j, t ).bconsisCost;
+							btotalResidentCost[t][j][tierT].bdelayCost=finalCostCal.btotalResidentCostPermuDatacenter(workloadGenerator.objectListRegion[j],tierT,j, t ).bdelayCost;
+							
 							btotalResidentCost[t][j][tierT].bnonMigrationCost=finalCostCal.btotalResidentCostPermuDatacenter(workloadGenerator.objectListRegion[j],tierT,j, t ).bnonMigrationCost;
 							
 						}

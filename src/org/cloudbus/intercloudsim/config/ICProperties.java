@@ -20,49 +20,40 @@ import org.cloudbus.cloudsim.Log;
 public enum ICProperties {
 
 	IC_EXPERIMENT_ID("experiment.id", ICPropertiesType.STRING),
-	
 	IC_EXPERIMENT_RUN("experiment.run", ICPropertiesType.INTEGER),
-	
 	IC_SIMULATION_PERIOD_TIME("period.time", ICPropertiesType.INTEGER),
-	
 	IC_SIMULATION_WINDOW_TIME("window.time", ICPropertiesType.INTEGER),
-	
 	IC_SIMULATION_DATACENTER_SPECIFICATION("datacenter.specification", ICPropertiesType.STRING),
 	IC_SIMULATION_DATACENTER_DELAY("datacenter.delay", ICPropertiesType.STRING),
-	
-	
 	IC_SIMULATION_DELAY_CONSTRAINT("delay.constraint", ICPropertiesType.INTEGER),
-	
 	IC_SIMULATION_NINES_NUMBER("nines.number", ICPropertiesType.LONG),
 	
 	IC_SIMULATION_REPLICA_NUMBER("replica.number", ICPropertiesType.INTEGER),
-	
 	IC_SIMULATION_OBJECT_NUMBER("object.number", ICPropertiesType.LONG),
-	
 	IC_SIMULATION_OBJECT_TOTAL_SIZE("object.total.size", ICPropertiesType.LONG),
 	IC_SIMULATION_SIZE_FACTOR("size.factor", ICPropertiesType.DOUBLE),
 	IC_SIMULATION_BUCKET_SIZE("bucket.size", ICPropertiesType.INTEGER),
 	IC_SIMULATION_OBJECT_TOTAL_READ_RATE("object.total.read.rate", ICPropertiesType.LONG),
-	
 	IC_SIMULATION_OBJECT_MIN_SIZE("object.min.size", ICPropertiesType.INTEGER),
 	IC_SIMULATION_OBJECT_MAX_SIZE("object.max.size", ICPropertiesType.INTEGER),
 	IC_SIMULATION_TRANSACTION_NUMBER_COEFFICIENT("transaction.number.coefficient", ICPropertiesType.LONG),
 	IC_SIMULATION_OBJECT_SIZE_DISTRIBUTION("object.size.distribution", ICPropertiesType.STRING),
+    IC_SIMULATION_OBJECT_TYPE("object.type", ICPropertiesType.STRING),
+	IC_SIMULATION_OBJECT_READ_TO_WRITE_RATE("object.read.to.write.rate", ICPropertiesType.INTEGER),
+	IC_SIMULATION_MAX_OBJECT_READ_TO_WRITE_RATE("max.object.read.to.write.rate", ICPropertiesType.INTEGER),
+	IC_SIMULATION_WEIBULL_SHAPE("weibull.shape", ICPropertiesType.DOUBLE),
+	IC_SIMULATION_WEIBULL_SCALE("weibull.scale", ICPropertiesType.DOUBLE),
+	IC_SIMULATION_OBJECT_READ_RATE("object.read.rate", ICPropertiesType.INTEGER),
+	IC_SIMULATION_EARLEY_DELETION_DAY("early.eletion.day", ICPropertiesType.INTEGER),
+	
 	
 	IC_SIMULATION_REGION_NUMBER("region.number", ICPropertiesType.INTEGER),
 	IC_SIMULATION_STORAGE_TIER_NUMBER("storage.tier.number", ICPropertiesType.INTEGER),
 	
+	
 	IC_SIMULATION_LATENCY_SENCETIVE("latency.sencetive", ICPropertiesType.DOUBLE),
 	IC_SIMULATION_PRECICES_COST("precicse.cost", ICPropertiesType.BOOLEAN),
 	
-	IC_SIMULATION_OBJECT_TYPE("object.type", ICPropertiesType.STRING),
-	
-	IC_SIMULATION_OBJECT_READ_TO_WRITE_RATE("object.read.to.write.rate", ICPropertiesType.INTEGER),
-	IC_SIMULATION_MAX_OBJECT_READ_TO_WRITE_RATE("max.object.read.to.write.rate", ICPropertiesType.INTEGER),
-	
-	IC_SIMULATION_WEIBULL_SHAPE("weibull.shape", ICPropertiesType.DOUBLE),
-	IC_SIMULATION_WEIBULL_SCALE("weibull.scale", ICPropertiesType.DOUBLE),
-	IC_SIMULATION_OBJECT_READ_RATE("object.read.rate", ICPropertiesType.INTEGER),
 	
 	IC_SIMULATION_OBJECT_READ_RATE_DISTRIBUTION("object.read.rate.distribution", ICPropertiesType.STRING),
 	

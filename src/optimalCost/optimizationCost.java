@@ -124,6 +124,7 @@ public class optimizationCost {
 								//System.out.println("***************** Online With Single Copy Algorithm ************");
 								
 								OnlineWithSingleCopyAlgorithm oSingle = new OnlineWithSingleCopyAlgorithm();
+								//WorkloadBasedOnlineWithSingleCopyAlgorithm woSingle=new WorkloadBasedOnlineWithSingleCopyAlgorithm();
 								oSingle.initialParameters();
 								//oSingle.setBreakPoint(bp);
 								oSingle.onlineCostOptimizationWithSingleCopy();

@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.Log;
 public class InterCloudSimConfiguration {
 
 	
-	public static String DEFAULT_PATH ="/Users/yaser/Documents/workspace2/TwoTierCostOptimization/default.properties";
+	public static String DEFAULT_PATH ="/Users/yaser/Documents/GitHub//Users/yaser/Documents/GitHub/WorkloadbasedObjectPlacement/default.properties";
 	private static InterCloudSimConfiguration singleton;
 	private Properties properties;
 
